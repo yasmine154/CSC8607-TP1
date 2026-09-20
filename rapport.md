@@ -35,7 +35,9 @@ la commande exacte utilisée pour annuler mon job était :
 ```bash
 scancel 1577
 ```
-![Résultat de annulation](images/stop_job.png)
+
+![Résultat de l'annulation](images/stop_job.png)
+
 ---
 
 ### 1.3 Soumission d'un job avec `sbatch`
@@ -80,7 +82,6 @@ Python 3.10.14
 /mnt/hdd/homes/ytounsi/miniforge3/envs/deeplearning/bin/python
 ```
 
-
 ---
 
 ### 2.2 Vérification de PyTorch et CUDA
@@ -99,9 +100,7 @@ PyTorch version: 2.5.1
 CUDA available: True
 Device count: 1
 Device 0 name: NVIDIA L4
-
 ```
-
 
 ---
 
@@ -121,9 +120,9 @@ La version installée est :
 
 ---
 
-# 3. Exercices théoriques
+## 3. Exercices théoriques
 
-## 3.1 Architecture et paramètres du MLP
+### 3.1 Architecture et paramètres du MLP
 
 Le réseau possède :
 
@@ -133,7 +132,7 @@ Le réseau possède :
 
 ![Architecture du MLP](images/mlp-schema.jpg)
 
-### Nombre de paramètres sans biais
+#### Nombre de paramètres sans biais
 
 Entre la couche d'entrée et la couche cachée :
 
@@ -153,7 +152,7 @@ $$
 12 + 8 = \boxed{20}
 $$
 
-### Nombre de paramètres avec biais
+#### Nombre de paramètres avec biais
 
 La couche cachée possède 4 biais et la couche de sortie possède 2 biais.
 
@@ -165,7 +164,7 @@ $$
 
 ---
 
-## 3.2 Équations et dimensions
+### 3.2 Équations et dimensions
 
 Le forward pass est :
 
@@ -191,7 +190,7 @@ Y  : (N, 2)
 
 ---
 
-## 3.3 Graphe de calcul et rétropropagation
+### 3.3 Graphe de calcul et rétropropagation
 
 On considère :
 
@@ -207,7 +206,7 @@ $$
 
 ![Graphe de calcul](images/graphe-calcul.jpg)
 
-### Forward pass
+#### Forward pass
 
 Pour :
 
@@ -227,7 +226,7 @@ $$
 f=q+z=0.5+0=\boxed{0.5}
 $$
 
-### Backpropagation
+#### Backpropagation
 
 On a :
 
@@ -282,7 +281,7 @@ $$
 
 ---
 
-## 3.4 Mise à jour par descente de gradient
+### 3.4 Mise à jour par descente de gradient
 
 Le learning rate est :
 
@@ -328,19 +327,19 @@ La fonction passe de $0.5$ à environ $-0.576$. Sa valeur a donc bien diminué.
 
 ---
 
-## 3.5 Questions de réflexion
+### 3.5 Questions de réflexion
 
-### Pourquoi utilise-t-on la règle de la chaîne ?
+#### Pourquoi utilise-t-on la règle de la chaîne ?
 
 Un réseau de neurones profond est composé de plusieurs fonctions successives. La règle de la chaîne permet de propager les gradients depuis la sortie vers les couches précédentes afin de calculer le gradient de la loss par rapport à chaque paramètre.
 
-### Pourquoi utiliser des mini-batchs ?
+#### Pourquoi utiliser des mini-batchs ?
 
 Les mini-batchs permettent d'exploiter efficacement le parallélisme du GPU tout en limitant la consommation mémoire. Ils fournissent également une estimation du gradient plus stable que l'utilisation d'un seul exemple à la fois.
 
 ---
 
-## 3.6 Fonction de sortie et fonction de perte
+### 3.6 Fonction de sortie et fonction de perte
 
 | Tâche                        | Fonction finale | Fonction de perte        |
 | ---------------------------- | --------------- | ------------------------ |
@@ -350,9 +349,9 @@ Les mini-batchs permettent d'exploiter efficacement le parallélisme du GPU tout
 
 ---
 
-# 4. Premier réseau de neurones
+## 4. Premier réseau de neurones
 
-## 4.1 `batch_size` et `shuffle`
+### 4.1 `batch_size` et `shuffle`
 
 `batch_size` correspond au nombre d'exemples traités simultanément avant une mise à jour des paramètres du réseau.
 
@@ -362,7 +361,7 @@ Pour le test, `shuffle=False` est suffisant car les paramètres du modèle ne so
 
 ---
 
-## 4.2 Utilisation de `torch.flatten`
+### 4.2 Utilisation de `torch.flatten`
 
 `torch.flatten(x, 1)` transforme chaque image de taille $3\times32\times32$ en un vecteur de :
 
@@ -388,7 +387,7 @@ Cette transformation est nécessaire car `nn.Linear` attend un vecteur de caract
 
 ---
 
-## 4.3 Absence de Softmax dans le modèle
+### 4.3 Absence de Softmax dans le modèle
 
 Il ne faut pas appliquer explicitement `Softmax` à la sortie du réseau lorsque l'on utilise `nn.CrossEntropyLoss`.
 
@@ -396,7 +395,7 @@ Il ne faut pas appliquer explicitement `Softmax` à la sortie du réseau lorsque
 
 ---
 
-## 4.4 `optimizer.zero_grad()` et `loss.backward()`
+### 4.4 `optimizer.zero_grad()` et `loss.backward()`
 
 `optimizer.zero_grad()` efface les gradients calculés lors de l'itération précédente, car PyTorch accumule les gradients par défaut.
 
@@ -404,15 +403,15 @@ Il ne faut pas appliquer explicitement `Softmax` à la sortie du réseau lorsque
 
 ---
 
-## 4.5 Évaluation
+### 4.5 Évaluation
 
-### Pourquoi utiliser `torch.no_grad()` ?
+#### Pourquoi utiliser `torch.no_grad()` ?
 
 Pendant l'évaluation, les paramètres du modèle ne sont pas modifiés. Il n'est donc pas nécessaire de calculer les gradients.
 
 `torch.no_grad()` évite de construire et de stocker le graphe nécessaire à la rétropropagation, ce qui réduit la consommation mémoire et les calculs inutiles.
 
-### Accuracy d'un classificateur aléatoire
+#### Accuracy d'un classificateur aléatoire
 
 CIFAR-10 contient 10 classes.
 
@@ -426,9 +425,9 @@ d'accuracy.
 
 ---
 
-# 5. TensorBoard
+## 5. TensorBoard
 
-## 5.1 Nom des dossiers de logs
+### 5.1 Nom des dossiers de logs
 
 Il est important d'inclure les hyperparamètres, la date et l'heure dans `run_name` afin d'identifier chaque expérience et d'éviter d'écraser les résultats des entraînements précédents.
 
@@ -436,7 +435,7 @@ Cela permet également de comparer facilement différentes configurations dans T
 
 ---
 
-## 5.2 Smoothing et bruit de `Loss/train_step`
+### 5.2 Smoothing et bruit de `Loss/train_step`
 
 Le niveau de smoothing choisi est :
 
@@ -452,10 +451,9 @@ Le niveau de smoothing choisi est :
 
 ![Loss train step](images/loss-train-step.png)
 
-
 ---
 
-## 5.3 Comparaison des trois runs
+### 5.3 Comparaison des trois runs
 
 Les trois configurations testées sont :
 
@@ -481,7 +479,7 @@ Pour le Run 3, les losses deviennent `NaN` et l'accuracy reste à environ **9.6 
 
 ---
 
-## 5.4 Détection du sur-apprentissage
+### 5.4 Détection du sur-apprentissage
 
 Un sur-apprentissage est visible lorsque la loss d'entraînement continue à diminuer alors que la loss de validation commence à augmenter.
 
