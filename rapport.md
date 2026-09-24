@@ -394,6 +394,9 @@ Il ne faut pas appliquer explicitement `Softmax` à la sortie du réseau lorsque
 `nn.CrossEntropyLoss` attend directement les logits produits par le réseau et réalise en interne les opérations nécessaires au calcul de la Cross Entropy.
 
 ---
+![Résultat du premier train](images/accuracy.png)
+
+---
 
 ### 4.4 `optimizer.zero_grad()` et `loss.backward()`
 
